@@ -127,15 +127,15 @@ exports.getAllhomedata = async (req, res) => {
         // `);
 
         // Map products to include their sizes
-        // const productsWithSizes = products.map(prod => ({
-        //     ...prod,
-        //     sizes: sizes.filter(size => size.product_id === prod.prod_id)
-        // }));
+        const productsWithSizes = products.map(prod => ({
+            ...prod,
+            sizes: sizes.filter(size => size.product_id === prod.prod_id)
+        }));
 
         // Map categories to include products
         const categoriesWithProducts = categories.map(cat => ({
             ...cat,
-            // products: productsWithSizes.filter(prod => prod.category_id === cat.cate_id)
+            products: productsWithSizes.filter(prod => prod.category_id === cat.cate_id)
         }));
 
         // Return structured JSON

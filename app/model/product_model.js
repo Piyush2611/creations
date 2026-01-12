@@ -32,7 +32,11 @@ module.exports = (sequelize, Sequelize) => {
             },
             status: {
                 type: Sequelize.ENUM("ACTIVE", "INACTIVE"),
-                // defaultValue: "ACTIVE",
+                defaultValue: "ACTIVE",
+            },
+            is_active :{
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
             },
             isDeleted: {
                 type: Sequelize.BOOLEAN,

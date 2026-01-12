@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const Sequelize = require("sequelize");
+const { readFileSync } = require('fs');
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -11,6 +12,19 @@ const sequelize = new Sequelize(
     dialect: process.env.DB_DIALECT,
     port: process.env.PORT,
     logging: true,
+
+    dialectOptions: {
+      ssl:
+        process.env?.TIDB_ENABLE_SSL === 'true'
+          ? {
+              minVersion: 'TLSv1.2',
+              rejectUnauthorized: true,
+              ca: process.env.TIDB_CA_PATH
+                ? readFileSync(process.env.TIDB_CA_PATH)
+                : undefined,
+            }
+          : null,
+    },
   }
 );
 
