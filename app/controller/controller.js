@@ -99,7 +99,7 @@ exports.getAllhomedata = async (req, res) => {
             WHERE status = 'ACTIVE'
         `);
 
-    const bannersWithFullUrl = banners.map(b => ({
+    const bannersWithFullUrl = banners?.map(b => ({
       ...b,
       images: b.images
         ? b.images.split(',').map(img => `${BASE_URL}/${img.replace(/\\/g, '/')}`)
@@ -121,14 +121,14 @@ exports.getAllhomedata = async (req, res) => {
         `);
 
     // Map products to categories
-    const categoriesWithProducts = categories.map(cat => ({
+    const categoriesWithProducts = categories?.map(cat => ({
       ...cat,
       products: products.filter(prod => prod.category_id === cat.cate_id)
     }));
 
     // Category title mapping
     const categoryTitleMap = {
-      "CO-ORDS": "Trending Styles You’ll Love",
+      "CO-ORDS": "Trending Styles You will Love",
       "NEW ARRIVALS": "New Arrivals",
       "ETHENIC WEAR": "Best Sellers",
       "OFFERS": "Shop More, Save More"
