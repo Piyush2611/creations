@@ -26,6 +26,11 @@ module.exports = (sequelize, Sequelize) => {
                     key: 'sub_cate_id',
                 }
             },
+            image :{
+                type: Sequelize.TEXT,
+                defaultValue: true,
+                allowNull: false,
+            },
             position :{
                 type:Sequelize.INTEGER,
                 defaultValue:0
