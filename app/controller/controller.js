@@ -102,7 +102,7 @@ exports.getAllhomedata = async (req, res) => {
     const bannersWithFullUrl = banners?.map(b => ({
       ...b,
       images: b.images
-        ? b.images.split(',').map(img => `${BASE_URL}/${img.replace(/\\/g, '/')}`)
+        ? b.images.split(',')?.map(img => `${BASE_URL}/${img.replace(/\\/g, '/')}`)
         : []
     }));
 
@@ -119,6 +119,7 @@ exports.getAllhomedata = async (req, res) => {
             FROM Products
             WHERE status = 'ACTIVE'
         `);
+    console.log("categories", categories);
 
     // Map products to categories
     const categoriesWithProducts = categories?.map(cat => ({
