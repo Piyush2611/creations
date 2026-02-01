@@ -75,12 +75,12 @@ exports.createCategory = async (req, res) => {
 
 exports.bannerimages = async (req, res) => {
     try {
-        // Join paths into a single string
-        const imagePaths = req.files.map(file => file.path).join(','); 
+        const imagePaths = req.files.map(file => file.path).join(',');
 
         const newBanner = await Banner.create({
             images: imagePaths,
-            status: 'ACTIVE'
+            status: 'ACTIVE',
+            homepage_id: 1   // 👈 attach to HomePage id = 1
         });
 
         res.json(newBanner);

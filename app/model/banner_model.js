@@ -9,22 +9,22 @@ module.exports = (sequelize, Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            homepage_id :{
-                type : Sequelize.INTEGER,
-                allowNull:true,
-                references :{
-                    model : 'HomePage',
-                    id:'home_id'
+            homepage_id: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'HomePage', // or the actual table name
+                    key: 'home_id'
                 }
             },
-            images :{
-                type : Sequelize.TEXT,
-                defaultValue : true,
+            images: {
+                type: Sequelize.TEXT,
+                defaultValue: true,
                 allowNull: false,
             },
-            postion :{
-                type : Sequelize.INTEGER,
-                defaultValue : 0
+            postion: {
+                type: Sequelize.INTEGER,
+                defaultValue: 0
             },
             status: {
                 type: Sequelize.ENUM("ACTIVE", "INACTIVE"),
@@ -34,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.BOOLEAN,
                 defaultValue: false,
             },
-            
+
         },
         {
             freezeTableName: true,
