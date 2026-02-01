@@ -74,79 +74,96 @@ exports.createCategory = async (req, res) => {
 };
 
 exports.bannerimages = async (req, res) => {
-    try {
-        const imagePaths = req.files.map(file => file.path).join(',');
+  try {
+    const imagePaths = req.files.map(file => file.path).join(',');
 
-        const newBanner = await Banner.create({
-            images: imagePaths,
-            status: 'ACTIVE',
-            homepage_id: 1   // 👈 attach to HomePage id = 1
-        });
+    const newBanner = await Banner.create({
+      images: imagePaths,
+      status: 'ACTIVE',
+      homepage_id: 1   // 👈 attach to HomePage id = 1
+    });
 
-        res.json(newBanner);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    res.json(newBanner);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 
 exports.getAllhomedata = async (req, res) => {
-    try {
-        // Fetch banners
-        const [banners] = await db.sequelize.query(`
+  try {
+    // Fetch banners
+    const [banners] = await db.sequelize.query(`
             SELECT baner_id, images, status, createdAt, updatedAt 
             FROM Banner 
             WHERE status = 'ACTIVE'
         `);
 
-        const bannersWithFullUrl = banners.map(b => ({
-            ...b,
-            images: b.images
-                ? b.images.split(',').map(img => `${BASE_URL}/${img.replace(/\\/g, '/')}`)
-                : []
-        }));
+    const bannersWithFullUrl = banners.map(b => ({
+      ...b,
+      images: b.images
+        ? b.images.split(',').map(img => `${BASE_URL}/${img.replace(/\\/g, '/')}`)
+        : []
+    }));
 
-        // Fetch categories
-        const [categories] = await db.sequelize.query(`
+    // Fetch categories
+    const [categories] = await db.sequelize.query(`
             SELECT cate_id, cate_name, status, createdAt, updatedAt
             FROM Categories 
             WHERE status = 'ACTIVE'
         `);
 
-        // Fetch all products
-        const [products] = await db.sequelize.query(`
+    // Fetch products
+    const [products] = await db.sequelize.query(`
             SELECT prod_id, prod_name, category_id, is_active, position, status, isDeleted, createdAt, updatedAt
             FROM Products
             WHERE status = 'ACTIVE'
         `);
 
-        // Fetch all sizes
-        // const [sizes] = await db.sequelize.query(`
-        //     SELECT size_id, size_code, size_label, product_id, createdAt, updatedAt
-        //     FROM Prod_Size
-        // `);
+    // Map products to categories
+    const categoriesWithProducts = categories.map(cat => ({
+      ...cat,
+      products: products.filter(prod => prod.category_id === cat.cate_id)
+    }));
 
-        // Map products to include their sizes
-        const productsWithSizes = products.map(prod => ({
-            ...prod,
-            sizes: sizes.filter(size => size.product_id === prod.prod_id)
-        }));
+    // Category title mapping
+    const categoryTitleMap = {
+      "CO-ORDS": "Trending Styles You’ll Love",
+      "NEW ARRIVALS": "New Arrivals",
+      "ETHENIC WEAR": "Best Sellers",
+      "OFFERS": "Shop More, Save More"
+    };
 
-        // Map categories to include products
-        const categoriesWithProducts = categories.map(cat => ({
-            ...cat,
-            products: productsWithSizes.filter(prod => prod.category_id === cat.cate_id)
-        }));
+    const categoryOrder = [
+      "CO-ORDS",
+      "NEW ARRIVALS",
+      "ETHENIC WEAR",
+      "OFFERS"
+    ];
 
-        // Return structured JSON
-        res.json({
-            banners: bannersWithFullUrl,
-            categories: categoriesWithProducts
-        });
+    const filteredCategories = categoriesWithProducts
+      .filter(cat => categoryTitleMap[cat.cate_name])
+      .sort(
+        (a, b) =>
+          categoryOrder.indexOf(a.cate_name) -
+          categoryOrder.indexOf(b.cate_name)
+      )
+      .map(cat => ({
+        ...cat,
+        display_title: categoryTitleMap[cat.cate_name]
+      }));
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
+
+    // Response
+    res.json({
+      banners: bannersWithFullUrl,
+      categories: filteredCategories
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 };
+
 
