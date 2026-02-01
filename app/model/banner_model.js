@@ -1,3 +1,5 @@
+const { homepage } = require("..");
+
 module.exports = (sequelize, Sequelize) => {
     const banner = sequelize.define(
         "Banner",
@@ -6,6 +8,14 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
                 primaryKey: true,
+            },
+            homepage_id :{
+                type : Sequelize.INTEGER,
+                allowNull:true,
+                references :{
+                    model : 'HomePage',
+                    id:'home_id'
+                }
             },
             images :{
                 type : Sequelize.TEXT,

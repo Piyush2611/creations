@@ -1,7 +1,7 @@
 const db = require("../index");
 const Category = db.categories;
 const Banner = db.banner;
-const BASE_URL = 'http://localhost:5000'; // your server base URL
+const BASE_URL = "https://creations-dsb1.onrender.com/uploads/"
 
 
 exports.getAllCategories = async (req, res) => {
